@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="../Football.GrpcService/Football.GrpcService.csproj" Id="fd8b8549-134a-4222-b492-4cabc5424012" />
+  <Project Path="../Football.PredictionApi/Football.PredictionApi.csproj" />
   <Project Path="Football.Web.csproj" />
 </Solution>
