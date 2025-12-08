@@ -1,17 +1,22 @@
-﻿namespace Football.Web.Models;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace Football.Web.Models;
 
 public class Match
 {
     public int Id { get; set; }
 
     public int SeasonId { get; set; }
-    public Season Season { get; set; } = null!;
+    [ValidateNever]
+    public Season? Season { get; set; }
 
     public int HomeTeamId { get; set; }
-    public Team HomeTeam { get; set; } = null!;
+    [ValidateNever]
+    public Team? HomeTeam { get; set; }
 
     public int AwayTeamId { get; set; }
-    public Team AwayTeam { get; set; } = null!;
+    [ValidateNever]
+    public Team? AwayTeam { get; set; }
 
     public DateTime KickoffDate { get; set; }
 
@@ -21,5 +26,6 @@ public class Match
     public string? Result1X2 { get; set; }
     public bool? IsOver25 { get; set; }
 
+    [ValidateNever]
     public ICollection<PredictionHistory> Predictions { get; set; } = new List<PredictionHistory>();
 }
