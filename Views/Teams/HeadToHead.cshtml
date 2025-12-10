@@ -1,0 +1,50 @@
+﻿@using Football.GrpcService
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Football.Web.Models.HeadToHeadViewModel
+
+@{
+    ViewData["Title"] = "Head to head";
+    var teamsList = ViewBag.Teams as IEnumerable<SelectListItem>;
+}
+
+<h1>Head to head</h1>
+
+<form asp-action="HeadToHead" method="post">
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label asp-for="HomeTeamId" class="form-label">Home team</label>
+            <select asp-for="HomeTeamId" asp-items="teamsList" class="form-select">
+                <option value="">-- select --</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="AwayTeamId" class="form-label">Away team</label>
+            <select asp-for="AwayTeamId" asp-items="teamsList" class="form-select">
+                <option value="">-- select --</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label asp-for="LastN" class="form-label">Last N matches</label>
+            <input asp-for="LastN" class="form-control" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Show stats</button>
+        </div>
+    </div>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+</form>
+
+@if (Model.Stats != null && Model.HomeTeam != null && Model.AwayTeam != null)
+{
+    <h2>@Model.HomeTeam.Name vs @Model.AwayTeam.Name (ultimele @Model.LastN meciuri)</h2>
+
+    <ul>
+        <li>Meciuri jucate: @Model.Stats.MatchesCount</li>
+        <li>Victorii @Model.HomeTeam.Name: @Model.Stats.HomeWins</li>
+        <li>Victorii @Model.AwayTeam.Name: @Model.Stats.AwayWins</li>
+        <li>Remize: @Model.Stats.Draws</li>
+        <li>Goluri medii @Model.HomeTeam.Name: @Model.Stats.HomeAvgGoals.ToString("0.00")</li>
+        <li>Goluri medii @Model.AwayTeam.Name: @Model.Stats.AwayAvgGoals.ToString("0.00")</li>
+    </ul>
+}

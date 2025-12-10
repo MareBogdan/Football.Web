@@ -1,0 +1,49 @@
+﻿@using Football.GrpcService
+@model Football.Web.Models.TeamFormViewModel
+
+@{
+    ViewData["Title"] = "Team form";
+}
+
+<h1>Form @Model.Team.Name (ultimele @Model.LastN meciuri)</h1>
+
+<h3>Rezumat</h3>
+<ul>
+    <li>Victorii: @Model.Form.Wins</li>
+    <li>Remize: @Model.Form.Draws</li>
+    <li>Înfrângeri: @Model.Form.Losses</li>
+    <li>Goluri marcate / meci: @Model.Form.AvgGoalsFor.ToString("0.00")</li>
+    <li>Goluri primite / meci: @Model.Form.AvgGoalsAgainst.ToString("0.00")</li>
+</ul>
+
+<h3>Ultimele meciuri</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Liga</th>
+            <th>Sezon</th>
+            <th>Gazde</th>
+            <th>Oaspeți</th>
+            <th>Scor</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var m in Model.LastMatches.Matches)
+        {
+            <tr>
+                <td>@m.MatchDate</td>
+                <td>@m.LeagueName</td>
+                <td>@m.SeasonName</td>
+                <td>@m.HomeTeamName</td>
+                <td>@m.AwayTeamName</td>
+                <td>@m.HomeGoals - @m.AwayGoals</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Details" asp-route-id="@Model.Team.Id">Înapoi la detalii echipă</a> |
+    <a asp-action="Index">Înapoi la listă echipe</a>
+</p>
