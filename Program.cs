@@ -11,6 +11,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// serviciul gRPC de statistici (client către Football.GrpcService)
+builder.Services.AddScoped<IFootballStatsGrpcClient, FootballStatsGrpcClient>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
