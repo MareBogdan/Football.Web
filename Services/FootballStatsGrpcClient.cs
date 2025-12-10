@@ -1,5 +1,4 @@
 ﻿using Football.GrpcService;
-using FootballStats;        // tipurile generate din footballstats.proto
 using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 
@@ -55,7 +54,7 @@ namespace Football.Web.Services
             var request = new LastNMatchesRequest
             {
                 TeamId = teamId,
-                LastN = lastN
+                Count = lastN
             };
 
             return await _client.GetLastNMatchesAsync(request, cancellationToken: cancellationToken);

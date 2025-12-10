@@ -30,8 +30,9 @@
 
 	<!-- gRPC client generat din footballstats.proto (luat din proiectul Football.GrpcService) -->
 	<ItemGroup>
-		<Protobuf Include="..\Football.GrpcService\Protos\footballstats.proto"
-				  GrpcServices="Client"
-				  ProtoRoot="..\Football.GrpcService\Protos" />
+		<Protobuf Include="..\Football.GrpcService\Protos\footballstats.proto" GrpcServices="Client" ProtoRoot="..\Football.GrpcService\Protos" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Protos\" />
 	</ItemGroup>
 </Project>
