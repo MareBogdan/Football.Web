@@ -1,0 +1,130 @@
+﻿@using System.Text.Json
+@model Football.Web.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var overUnderData = new[] { Model.OverCount, Model.UnderCount };
+    var resultData = new[] { Model.CorrectCount, Model.WrongCount, Model.UnknownCount };
+    var labelsPerDay = JsonSerializer.Serialize(Model.PredictionsPerDayLabels);
+    var valuesPerDay = JsonSerializer.Serialize(Model.PredictionsPerDayCounts);
+}
+
+<h1>Dashboard</h1>
+
+@if (Model.TotalPredictions == 0)
+{
+    <p>Nu există încă predicții înregistrate.</p>
+    <p>
+        <a asp-controller="Predictions" asp-action="Index" class="btn btn-primary">
+            Fă prima predicție
+        </a>
+    </p>
+}
+else
+{
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Total predicții</h5>
+                <p class="display-6">@Model.TotalPredictions</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Distribuție Over / Under</h5>
+                <p>Over: @Model.OverCount (@Model.OverPercentage.ToString("0.0")%)</p>
+                <p>Under: @Model.UnderCount (@Model.UnderPercentage.ToString("0.0")%)</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Rată de succes</h5>
+                <p class="display-6">@Model.SuccessRate.ToString("0.0")%</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <h4>Over vs Under</h4>
+            <canvas id="overUnderChart"></canvas>
+        </div>
+        <div class="col-md-6 mb-4">
+            <h4>Corecte vs Greșite vs Necunoscute</h4>
+            <canvas id="resultsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h4>Număr predicții pe zi</h4>
+            <canvas id="perDayChart"></canvas>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    @if (Model.TotalPredictions > 0)
+    {
+        <script>
+            // Over vs Under
+            const overUnderCtx = document.getElementById('overUnderChart');
+            new Chart(overUnderCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Over 2.5', 'Under 2.5'],
+                    datasets: [{
+                        data: [@Model.OverCount, @Model.UnderCount]
+                    }]
+                }
+            });
+
+            // Correct / Wrong / Unknown
+            const resultsCtx = document.getElementById('resultsChart');
+            new Chart(resultsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Corecte', 'Greșite', 'Necunoscute'],
+                    datasets: [{
+                        data: [@Model.CorrectCount, @Model.WrongCount, @Model.UnknownCount]
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                    }
+                }
+            });
+
+            // Predictions per day
+            const perDayCtx = document.getElementById('perDayChart');
+            const labelsPerDay = @Html.Raw(labelsPerDay);
+            const valuesPerDay = @Html.Raw(valuesPerDay);
+
+            new Chart(perDayCtx, {
+                type: 'line',
+                data: {
+                    labels: labelsPerDay,
+                    datasets: [{
+                        data: valuesPerDay,
+                        fill: false,
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                    }
+                }
+            });
+        </script>
+    }
+}
