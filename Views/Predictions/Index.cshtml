@@ -13,6 +13,11 @@
         <div class="col-md-6">
             <h4>Home team stats</h4>
             <div class="form-group mb-2">
+                <label asp-for="HomeTeamName" class="form-label"></label>
+                <input asp-for="HomeTeamName" class="form-control" />
+                <span asp-validation-for="HomeTeamName" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
                 <label asp-for="HomeGoalsForAvg" class="form-label"></label>
                 <input asp-for="HomeGoalsForAvg" class="form-control" />
                 <span asp-validation-for="HomeGoalsForAvg" class="text-danger"></span>
@@ -31,6 +36,12 @@
 
         <div class="col-md-6">
             <h4>Away team stats</h4>
+            <div class="form-group mb-2">
+                <label asp-for="AwayTeamName" class="form-label"></label>
+                <input asp-for="AwayTeamName" class="form-control" />
+                <span asp-validation-for="AwayTeamName" class="text-danger"></span>
+            </div>
+
             <div class="form-group mb-2">
                 <label asp-for="AwayGoalsForAvg" class="form-label"></label>
                 <input asp-for="AwayGoalsForAvg" class="form-control" />
@@ -51,6 +62,8 @@
 
     <div class="mt-3">
         <button type="submit" class="btn btn-primary">Predict</button>
+        <a asp-action="History" class="btn btn-link ms-2">View prediction history</a>
+
         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary ms-2">Back to Home</a>
     </div>
 </form>
@@ -61,6 +74,7 @@
 {
     <div class="alert @(Model.IsOver25.Value ? "alert-success" : "alert-info") mt-3">
         <strong>Prediction:</strong>
+        <span>@Model.HomeTeamName vs @Model.AwayTeamName – </span>
         @if (Model.IsOver25.Value)
         {
             <span>Over 2.5 goals</span>

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Football.Web.Models.PredictionHistory>
+
+@{
+    ViewData["Title"] = "Prediction history";
+}
+
+<h1>Prediction history</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Home team</th>
+            <th>Away team</th>
+            <th>Model</th>
+            <th>Predicted</th>
+            <th>Score</th>
+            <th>Was correct?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@item.HomeTeamName</td>
+                <td>@item.AwayTeamName</td>
+                <td>@item.ModelType</td>
+                <td>@item.PredictedLabel</td>
+                <td>@item.PredictedProbability.ToString("0.000")</td>
+                <td>
+                    @if (item.WasCorrect.HasValue)
+                    {
+                        @((item.WasCorrect.Value ? "Yes" : "No"))
+                    }
+                    else
+                    {
+                        @("-")
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back to prediction form</a>

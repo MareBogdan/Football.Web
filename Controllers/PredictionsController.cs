@@ -1,17 +1,21 @@
-﻿using System.Threading.Tasks;
+﻿using Football.Web.Data;
 using Football.Web.Models;
 using Football.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Football.Web.Controllers
 {
     public class PredictionsController : Controller
     {
         private readonly IMatchPredictionService _matchPredictionService;
+        private readonly ApplicationDbContext _context;
 
-        public PredictionsController(IMatchPredictionService matchPredictionService)
+        public PredictionsController(IMatchPredictionService matchPredictionService, ApplicationDbContext context)
         {
             _matchPredictionService = matchPredictionService;
+            _context = context;
         }
 
         // GET: /Predictions/
@@ -31,6 +35,16 @@ namespace Football.Web.Controllers
 
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult> History()
+        {
+            var history = await _context.PredictionHistories
+                .OrderByDescending(ph => ph.CreatedAt)
+                .ToListAsync();
+
+            return View(history);
+        }
+
 
         // POST: /Predictions/
         [HttpPost]
@@ -59,6 +73,22 @@ namespace Football.Web.Controllers
             // Populăm rezultatul în ViewModel ca să-l afișăm în aceeași pagină
             model.IsOver25 = result.IsOver25;
             model.Score = result.Score;
+            // Salvăm în PredictionHistory
+            var historyEntry = new PredictionHistory
+            {
+                MatchId = null, // deocamdată nu legăm de un Match anume
+                CreatedAt = DateTime.UtcNow,
+                ModelType = "OverUnder25",
+                HomeTeamName = model.HomeTeamName ?? string.Empty,
+                AwayTeamName = model.AwayTeamName ?? string.Empty,
+                PredictedLabel = result.IsOver25 ? "Over 2.5" : "Under 2.5",
+                PredictedProbability = result.Score,
+                WasCorrect = null
+            };
+
+            _context.PredictionHistories.Add(historyEntry);
+            await _context.SaveChangesAsync();
+
 
             return View(model);
         }
