@@ -1,0 +1,84 @@
+﻿@model Football.Web.Models.MatchPredictionViewModel
+
+@{
+    ViewData["Title"] = "Match Prediction (Over / Under 2.5)";
+}
+
+<h1>Match Prediction (Over / Under 2.5)</h1>
+
+<form asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Home team stats</h4>
+            <div class="form-group mb-2">
+                <label asp-for="HomeGoalsForAvg" class="form-label"></label>
+                <input asp-for="HomeGoalsForAvg" class="form-control" />
+                <span asp-validation-for="HomeGoalsForAvg" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="HomeGoalsAgainstAvg" class="form-label"></label>
+                <input asp-for="HomeGoalsAgainstAvg" class="form-control" />
+                <span asp-validation-for="HomeGoalsAgainstAvg" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="HomeOver25Rate" class="form-label"></label>
+                <input asp-for="HomeOver25Rate" class="form-control" />
+                <span asp-validation-for="HomeOver25Rate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Away team stats</h4>
+            <div class="form-group mb-2">
+                <label asp-for="AwayGoalsForAvg" class="form-label"></label>
+                <input asp-for="AwayGoalsForAvg" class="form-control" />
+                <span asp-validation-for="AwayGoalsForAvg" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="AwayGoalsAgainstAvg" class="form-label"></label>
+                <input asp-for="AwayGoalsAgainstAvg" class="form-control" />
+                <span asp-validation-for="AwayGoalsAgainstAvg" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="AwayOver25Rate" class="form-label"></label>
+                <input asp-for="AwayOver25Rate" class="form-control" />
+                <span asp-validation-for="AwayOver25Rate" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Predict</button>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary ms-2">Back to Home</a>
+    </div>
+</form>
+
+<hr />
+
+@if (Model.IsOver25.HasValue)
+{
+    <div class="alert @(Model.IsOver25.Value ? "alert-success" : "alert-info") mt-3">
+        <strong>Prediction:</strong>
+        @if (Model.IsOver25.Value)
+        {
+            <span>Over 2.5 goals</span>
+        }
+        else
+        {
+            <span>Under 2.5 goals</span>
+        }
+
+        @if (Model.Score.HasValue)
+        {
+            <span> (score: @Model.Score.Value.ToString("0.000"))</span>
+        }
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,4 +1,5 @@
-using Football.Web.Data;
+﻿using Football.Web.Data;
+using Football.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// HttpClient pentru Football.PredictionApi
+builder.Services.AddHttpClient<IMatchPredictionService, MatchPredictionService>(client =>
+{
+    // ATENȚIE: pune aici portul pe care rulează Football.PredictionApi la tine.
+    // Din ce ai arătat până acum: http://localhost:5255
+    client.BaseAddress = new Uri("http://localhost:5255/");
+});
 
 var app = builder.Build();
 
